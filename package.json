@@ -8,9 +8,7 @@
     "coverage": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | codacy-coverage && rm -rf ./coverage",
     "fmt": "prettier --write \"**/*.js\"",
     "fix": "eslint --fix \"**/*.js\"",
-    "beatify": "npm run fmt && npm run fix ",
-    "prepublish": "npm beatify && npm test",
-    "publsih": ""
+    "beatify": "npm run fmt && npm run fix "
   },
   "repository": {
     "type": "git",
