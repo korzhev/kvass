@@ -1,18 +1,16 @@
 {
   "name": "kvass",
   "version": "0.0.1",
-  "description": "",
+  "description": "Promise flow helpers. Based on async await",
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha",
-    "coverage": "istanbul cover _mocha --report lcovonly -- -R spec",
-    "coverage_silenced": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec ./test/*; true",
+    "coverage": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | codacy-coverage && rm -rf ./coverage",
     "fmt": "prettier --write \"**/*.js\"",
     "fix": "eslint --fix \"**/*.js\"",
     "beatify": "npm run fmt && npm run fix ",
-    "prepublish": "",
-    "publsih": "",
-    "coveralls": "cat ./coverage/lcov.info | coveralls"
+    "prepublish": "npm beatify && npm test",
+    "publsih": ""
   },
   "repository": {
     "type": "git",
@@ -25,8 +23,11 @@
     "control",
     "async",
     "await",
+    "control flow",
     "control-flow",
+    "promise flow",
     "promise-flow",
+    "async await",
     "async-await",
     "utility"
   ],
@@ -37,7 +38,7 @@
   },
   "homepage": "https://github.com/korzhev/kvass#readme",
   "devDependencies": {
-    "coveralls": "^2.13.1",
+    "codacy-coverage": "^2.0.2",
     "eslint": "^4.4.1",
     "eslint-config-prettier": "^2.3.0",
     "eslint-config-semistandard": "^11.0.0",
