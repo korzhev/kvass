@@ -1,1 +1,1 @@
-# kvass
+# kvass :beer:

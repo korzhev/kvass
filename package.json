@@ -1,0 +1,54 @@
+{
+  "name": "kvass",
+  "version": "0.0.1",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/_mocha ",
+    "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec ./test/*",
+    "coverage_silenced": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec ./test/*; true",
+    "fmt": "prettier --write \"{lib,__{tests,mocks}__}/**/*.js\"",
+    "fix": "eslint --fix \"{lib,__{tests,mocks}__}/**/*.js\"",
+    "beatify": "npm run fmt && npm run fix ",
+    "prepublish": "",
+    "publsih": "",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/korzhev/kvass.git"
+  },
+  "keywords": [
+    "promise",
+    "promises",
+    "flow",
+    "control",
+    "async",
+    "await",
+    "control-flow",
+    "promise-flow",
+    "async-await",
+    "utility"
+  ],
+  "author": "Vladimir Korzhev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/korzhev/kvass/issues"
+  },
+  "homepage": "https://github.com/korzhev/kvass#readme",
+  "devDependencies": {
+    "eslint": "^4.4.1",
+    "eslint-config-prettier": "^2.3.0",
+    "eslint-config-semistandard": "^11.0.0",
+    "eslint-config-standard": "^10.2.1",
+    "mocha": "^3.5.0",
+    "prettier": "^1.5.3"
+  },
+  "peerDependencies": {
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^7.2.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-standard": "^3.0.1"
+  }
+}
