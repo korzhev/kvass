@@ -7,6 +7,7 @@ describe('kvass', () => {
   describe('.reflect()', () => {
     it('promise', done => {
       kvass.reflect(p[0]).then(() => done()).catch(done);
+      Promise.all(kvass.reflect(p)).then(() => done()).catch(done);
     });
   });
 });
