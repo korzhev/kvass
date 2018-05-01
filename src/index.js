@@ -3,8 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const lib_1 = require("./lib");
 /**
  *
- * @param {IFaP} promises
- * @returns {Promise<any>}
+ * @param promises
  */
 function waterfall(promises) {
     let result = Promise.resolve();
@@ -20,22 +19,20 @@ function tap(cb) {
 exports.tap = tap;
 /**
  *
- * @param {IP} promises
- * @returns {Promise<void>}
+ * @param promises
  */
 function series(promises) {
     let result = Promise.resolve();
     for (const p of promises) {
-        result = result.then(() => p());
+        result = result.then(() => p);
     }
     return result;
 }
 exports.series = series;
 /**
  *
- * @param {IFAP} promises
- * @param {Iterable<any>} args
- * @returns {Promise<any>}
+ * @param promises
+ * @param args
  */
 function seriesApply(promises, args) {
     let result = Promise.resolve();
@@ -49,11 +46,10 @@ function seriesApply(promises, args) {
 exports.seriesApply = seriesApply;
 /**
  *
- * @param {number} time
+ * @param time
  * @param timeoutWrap
- * @returns {Promise<any>}
  */
-function wait(time, timeoutWrap) {
+function wait(time, timeoutWrap = { timeout: 0 }) {
     return new Promise((resolve, reject) => {
         const t = setTimeout(resolve, time);
         if (arguments.length === 2) {
@@ -64,28 +60,12 @@ function wait(time, timeoutWrap) {
 exports.wait = wait;
 /**
  *
- * @param {AP | IObjectPromise} p
- * @returns {AP | IObjectPromise}
- */
-// export function reflect<T>(p: AP | IObjectPromise) :Promise<any>{
-//   if (Array.isArray(p)) {
-//     return p.map(promise => promise.catch(e => e));
-//   }
-//   const keys = Object.keys(p);
-//   return keys.reduce((acc, key) => {
-//     acc[key] = p[key].catch(e => e);
-//     return acc;
-//   }, {});
-// }
-/**
- *
- * @param {IObjectPromise} promises
- * @returns {Promise<object>}
+ * @param promises
  */
 function props(promises) {
     const keys = Object.keys(promises);
     const list = keys.map(key => promises[key]);
-    return Promise.all(list).then(lib_1.arrayToMap(keys));
+    return Promise.all(list).then(lib_1.arrayToMapFunc(keys));
 }
 exports.props = props;
 const mute = () => {
@@ -93,78 +73,54 @@ const mute = () => {
 };
 /**
  *
- * @param {AP | IObjectPromise} p
- * @param {() => any} cb
- * @returns {AP | IObjectPromise}
+ * @param p
+ * @param cb
  */
 function silence(p, cb = mute) {
     if (Array.isArray(p)) {
         return p.map(promise => promise.catch(cb));
     }
+    return [];
 }
 exports.silence = silence;
 /**
  *
- * @param {Promise<any>} p
- * @param {number} times
- * @returns {Promise<any>}
+ * @param pFunc
+ * @param times
  */
-async function retry(p, times = Infinity) {
-    let i = 1;
-    let err;
-    let result;
-    while (i++ < times && result === undefined) {
-        try {
-            result = await p;
-        }
-        catch (e) {
-            err = e;
-        }
+function retry(pFunc, times = 500) {
+    let p = pFunc();
+    for (let i = 1; i < times; i++) {
+        p = p.catch(pFunc);
     }
-    if (err) {
-        throw err;
-    }
-    return result;
+    return p;
 }
 exports.retry = retry;
 /**
  *
- * @param {Promise<any>} p
- * @param {number} time
- * @param {number} times
+ * @param pFunc
+ * @param times
+ * @param time
  * @param timeout
- * @returns {Promise<any>}
  */
-async function retryWithPause(p, time = 100, times = Infinity, timeout) {
-    let i = 1;
-    let err;
-    let result;
-    while (i++ < times && result === undefined) {
-        try {
-            await wait(time, timeout);
-            result = await p;
-        }
-        catch (e) {
-            err = e;
-        }
+async function retryWithPause(pFunc, times = 200, time = 100, timeout) {
+    let p = pFunc();
+    for (let i = 1; i < times; i++) {
+        p = p.catch(() => wait(time, timeout)).then(pFunc);
     }
-    if (err) {
-        throw err;
-    }
-    return result;
+    return p;
 }
 exports.retryWithPause = retryWithPause;
 /**
  *
- * @param {Promise<any>} p
- * @param {number} times
- * @returns {Promise<any[]>}
+ * @param pFunc
+ * @param times
  */
-async function repeat(p, times = Infinity) {
-    let i = 1;
+async function repeat(pFunc, times = 200) {
+    let i = 0;
     const result = [];
     while (i++ < times) {
-        const promiseResult = await p;
+        const promiseResult = await pFunc();
         result.push(promiseResult);
     }
     return result;
@@ -172,18 +128,17 @@ async function repeat(p, times = Infinity) {
 exports.repeat = repeat;
 /**
  *
- * @param {Promise<any>} p
- * @param {number} time
- * @param {number} times
+ * @param pFunc
+ * @param times
+ * @param time
  * @param timeout
- * @returns {Promise<any[]>}
  */
-async function repeatWithPause(p, time = 100, times = Infinity, timeout) {
-    let i = 1;
+async function repeatWithPause(pFunc, times = 200, time = 100, timeout) {
+    let i = 0;
     const result = [];
     while (i++ < times) {
         await wait(time, timeout);
-        const promiseResult = await p;
+        const promiseResult = await pFunc();
         result.push(promiseResult);
     }
     return result;
@@ -191,8 +146,7 @@ async function repeatWithPause(p, time = 100, times = Infinity, timeout) {
 exports.repeatWithPause = repeatWithPause;
 /**
  *
- * @param {IP} p
- * @returns {Promise<any[]>}
+ * @param p
  */
 async function mapSeries(p) {
     const result = [];
@@ -205,13 +159,12 @@ async function mapSeries(p) {
 exports.mapSeries = mapSeries;
 /**
  *
- * @param {IP} p
- * @param {number} limit
- * @returns {Promise<any[]>}
+ * @param p
+ * @param limit
  */
 async function parallelLimit(p, limit) {
     let result = [];
-    const list = [...p];
+    const list = p instanceof Array ? p : [...p];
     const tmp = lib_1.split(list, Math.ceil(list.length / limit));
     const length = tmp.length;
     for (let i = 0; i < length; i++) {

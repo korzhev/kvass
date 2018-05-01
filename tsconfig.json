@@ -5,9 +5,11 @@
     "target": "es2017",
     "sourceMap": true,
     "declaration": true,
-    "declarationDir": "typings"
+    "pretty": true,
+    "strict": true
   },
   "include": [
-    "src"
+    "src",
+    "test"
   ]
 }

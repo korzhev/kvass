@@ -1,11 +1,13 @@
+export interface IMap {
+  [key: string]: any;
+}
 /**
  *
- * @param {string[]} keys
- * @returns {(results) => {}}
+ * @param keys
  */
-export function arrayToMap(keys: string[]) {
-  return results => {
-    return results.reduce((acc, result, i) => {
+export function arrayToMapFunc(keys: string[]): (results: any) => any {
+  return (results: any[]) => {
+    return results.reduce((acc: IMap, result: any, i: number) => {
       acc[keys[i]] = result;
       return acc;
     }, {});
@@ -14,9 +16,8 @@ export function arrayToMap(keys: string[]) {
 
 /**
  *
- * @param {any[]} array
- * @param {number} chunkSize
- * @returns {any[]}
+ * @param array
+ * @param chunkSize
  */
 export function split(array: any[], chunkSize: number) {
   if (chunkSize <= 0) {

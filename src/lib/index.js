@@ -2,23 +2,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
  *
- * @param {string[]} keys
- * @returns {(results) => {}}
+ * @param keys
  */
-function arrayToMap(keys) {
-    return results => {
+function arrayToMapFunc(keys) {
+    return (results) => {
         return results.reduce((acc, result, i) => {
             acc[keys[i]] = result;
             return acc;
         }, {});
     };
 }
-exports.arrayToMap = arrayToMap;
+exports.arrayToMapFunc = arrayToMapFunc;
 /**
  *
- * @param {any[]} array
- * @param {number} chunkSize
- * @returns {any[]}
+ * @param array
+ * @param chunkSize
  */
 function split(array, chunkSize) {
     if (chunkSize <= 0) {
